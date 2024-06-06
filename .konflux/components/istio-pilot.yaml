@@ -1,13 +1,12 @@
-
 apiVersion: appstudio.redhat.com/v1alpha1
 kind: Component
 metadata:
   annotations:
     image.redhat.com/generate: "true" # TODO ??
     appstudio.openshift.io/pac-provision: request # TODO ??
-  name: sail-operator
+  name: istio-pilot
 spec:
-  componentName: sail-operator
+  componentName: istio-pilot
   application: sail-operator
   build-nudges-ref:
     # TODO: does this automatically trigger the bundle build?
@@ -15,6 +14,6 @@ spec:
     - sail-operator-metadata-bundle 
   source:
     git:
-      url: https://github.com/openshift-service-mesh/sail-operator.git
-      dockerfileUrl: Dockerfile
+      url: https://github.com/asmigala/istio.git
+      dockerfileUrl: docker/Dockerfile.konflux
       revision: konflux-wip

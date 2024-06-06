@@ -1,0 +1,36 @@
+# use non-scratch parent image as dummy for https://issues.redhat.com/browse/KFLUXBUGS-10
+FROM registry.redhat.io/ubi9/ubi-micro:latest
+FROM scratch
+
+# Core bundle labels.
+LABEL operators.operatorframework.io.bundle.mediatype.v1=registry+v1
+LABEL operators.operatorframework.io.bundle.manifests.v1=manifests/
+LABEL operators.operatorframework.io.bundle.metadata.v1=metadata/
+LABEL operators.operatorframework.io.bundle.package.v1=servicemeshoperator3
+LABEL operators.operatorframework.io.bundle.channels.v1="candidates"
+LABEL operators.operatorframework.io.metrics.builder=operator-sdk-v1.32.0
+LABEL operators.operatorframework.io.metrics.mediatype.v1=metrics+v1
+LABEL operators.operatorframework.io.metrics.project_layout=go.kubebuilder.io/v3
+
+# Labels for testing.
+LABEL operators.operatorframework.io.test.mediatype.v1=scorecard+v1
+LABEL operators.operatorframework.io.test.config.v1=tests/scorecard/
+
+# Copy files to locations specified by labels.
+COPY bundle/manifests /manifests/
+COPY bundle/metadata /metadata/
+COPY bundle/tests/scorecard /tests/scorecard/
+
+LABEL com.redhat.openshift.versions="v4.13"
+LABEL com.redhat.delivery.backport=false
+
+LABEL com.redhat.component="openshift-istio-operator-bundle-container" \
+      com.redhat.delivery.operator.bundle=true \
+      name="openshift-service-mesh/istio-operator-bundle" \
+      summary="Red Hat Service Mesh Operator Metadata OpenShift container image" \
+      description="Operator metadata for Red Hat Service Mesh" \
+      io.openshift.expose-services="" \
+      io.openshift.tags="istio" \
+      io.k8s.display-name="Red Hat Service Mesh Operator Metadata" \
+      maintainer="Istio Feedback <istio-feedback@redhat.com>" \
+      version="${CI_VERSION}.tp.1"
