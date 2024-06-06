@@ -12,6 +12,6 @@ spec:
     - sail-operator-index
   source:
     git:
-      url: https://github.com/openshift-service-mesh/sail-operator.git
+      url: https://github.com/asmigala/sail-operator.git
       dockerfileUrl: bundle/Dockerfile
       revision: konflux-wip

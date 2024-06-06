@@ -15,6 +15,6 @@ spec:
     - sail-operator-metadata-bundle 
   source:
     git:
-      url: https://github.com/openshift-service-mesh/sail-operator.git
+      url: https://github.com/asmigala/sail-operator.git
       dockerfileUrl: Dockerfile
       revision: konflux-wip
