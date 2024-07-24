@@ -1,14 +1,24 @@
 
 FROM registry.ci.openshift.org/openshift/release:rhel-8-release-golang-1.22-openshift-4.17 AS gobuilder
 
-ENV BASE=github.com/openshift-service-mesh/sail-operator
-WORKDIR ${GOPATH}/src/${BASE}
+WORKDIR /src
 
 COPY . .
 
-# TODO: is this needed?
-# ENV GOFLAGS="-mod=vendor"
+# TODO: why is this necessary?
+ENV GOBUILDFLAGS="-mod=mod"
+
 ENV BUILD_WITH_CONTAINER=0
+ENV MINIMUM_SUPPORTED_VERSION=v3.0
+#ENV GOPROXY=off
+ENV CGO_ENABLED=0
+ENV GO111MODULE=on
+ENV VERSION="${CI_VERSION}-tp.1"
+ENV GITREVISION=${CI_SAIL_OPERATOR_UPSTREAM_SHORT_COMMIT}
+ENV GITSTATUS=Clean
+ENV GITTAG="${CI_VERSION}-tp.1"
+ENV GIT_UPSTREAM_REMOTE="_DUMMY_"
+ENV OFFLINE_BUILD="true"
 
 RUN make build
 
@@ -17,8 +27,8 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 ARG TARGETOS TARGETARCH
 
 # TODO: parameterize
-COPY --from=gobuilder /go/src/github.com/openshift-service-mesh/sail-operator/out/${TARGETOS:-linux}_${TARGETARCH:-amd64}/manager /manager
-COPY --from=gobuilder /go/src/github.com/openshift-service-mesh/sail-operator/resources /var/lib/sail-operator/resources
+COPY --from=gobuilder /src/out/${TARGETOS:-linux}_${TARGETARCH:-amd64}/manager /manager
+COPY --from=gobuilder /src/resources /var/lib/sail-operator/resources
 
 USER 65532:65532
 WORKDIR /
